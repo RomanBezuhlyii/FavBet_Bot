@@ -1,0 +1,33 @@
+{% extends "base.html" %}
+{% import 'bootstrap/wtf.html' as wtf %}
+{% from "_render_field.html" import render_field, render_button %}
+
+{% block app_content %}
+<h3 class="text-center"><strong>Статус и права пользователей</strong></h3>
+<hr>
+<h5>Для изменения прав, кликните на ник необходимого пользователя и задайте необходимые параметры</h5>
+<hr>
+<table class="table table-bordered">
+    <tr>
+        <td><h4><strong>Имя пользователя</strong></h4></td>
+        <td><h4><strong>Активация аккаунта</strong></h4></td>
+        <td><h4><strong>Тип пользователя</strong></h4></td>
+    </tr>
+    {% for user in users %}
+    <tr>
+        <td><a href="{{ url_for('change_user_data_admin', username=user.username) }}"><h4>{{ user.username }}</h4></a></td>
+        {% if user.is_active == 0 %}
+            <td>Пользователь заблокирован</td>
+        {% else %}
+            <td>Пользователь активен</td>
+        {% endif %}
+        {% if user.is_admin == 0 %}
+            <td>Права пользователя</td>
+        {% else %}
+            <td>Права администратора</td>
+        {% endif %}
+    </tr>
+    {% endfor %}
+</table>
+
+{% endblock %}

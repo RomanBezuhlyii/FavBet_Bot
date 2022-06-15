@@ -1,0 +1,31 @@
+{% extends "base.html" %}
+{% import 'bootstrap/wtf.html' as wtf %}
+{% from "_render_field.html" import render_field, render_button %}
+
+{% block app_content %}
+    <div class="container">
+        <h2>Панель настройки бота</h2><hr>
+        <form action="" method="post" class="form" role="form">
+            {{ form.hidden_tag() }}
+            <fieldset>
+                {{ render_field(form.play_schema) }}
+                {{ render_field(form.play_time) }}
+                {{ render_field(form.min_bet) }}
+                {{ render_field(form.bet_info) }}
+                {{ render_field(form.middle0_line) }}
+                {% if game_start == 'active' %}
+                    <button type="submit" class="btn btn-primary btn-lg">Запустить</button>
+                {% endif %}
+            </fieldset>
+        </form>
+
+        <form action="/process_data/" method="POST" style="display: inline-block;">
+                <!-- скрытый параметр -->
+            <input type="hidden" name="index" value="1"><br>
+            {% if game_stop == 'active' %}
+                <button class="btn btn-danger btn-lg">Остановить</button>
+            {% endif %}
+        </form>
+
+    </div>
+{% endblock %}

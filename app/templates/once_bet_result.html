@@ -1,0 +1,44 @@
+{% extends "base.html" %}
+
+{% block app_content %}
+    {% if game_state == True %}
+        <h1>{{ no_balance }}</h1>
+        <h1>{{ user_text }}</h1>
+        <h2>Результаты ставок:</h2>
+            <div id="content"></div>
+            {% if info_state == 'one_bet' %}
+            <script>
+                    setInterval(function(){$.ajax({
+                        url: '/update',
+                        type: 'POST',
+                        success: function(response) {
+                            $("#content").prepend(response.data)
+                        }
+                    })}, 1000);
+            </script>
+            {% if load_data == False %}
+                {% if mode == '2 раза на цвет' or mode == 'Антимартингейл-цвет' %}
+                <ul>
+                    {% for str in strings %}
+                    <li><h4>{{ str }}</h4></li>
+                    {% endfor %}
+                </ul>
+                {% elif mode == 'Линии' or mode == 'Линии3' or mode == 'Линии2' or mode == 'Средняя0' or mode == 'СреднийБлок0'%}
+                <ul>
+                    {% for str in strings %}
+                        {% for elem in str %}
+                            <li><h4>{{ elem }}</h4></li>
+                        {% endfor %}
+                    {% endfor %}
+                </ul>
+                {% endif %}
+            {% endif %}
+            {% else %}
+                <h4>Информация о ставках появится после остановки работы бота.</h4>
+            {% endif %}
+    {% else %}
+    <div>
+        <h4>Результаты отсутствуют, так как бот остановлен</h4>
+    </div>
+    {% endif %}
+{% endblock %}

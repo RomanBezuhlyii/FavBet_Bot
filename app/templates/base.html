@@ -1,0 +1,106 @@
+{% extends 'bootstrap/base.html' %}
+
+{% block title %}
+    <title>FavBetBot</title>
+{% endblock %}
+
+{% block navbar %}
+    <head>
+        <script type="text/javascript" src="jquery.js"></script>
+    </head>
+    <nav class="navbar navbar-default">
+        <div class="container-fluid">
+            <div class="navbar-header">
+                <a class="navbar-brand" href="{{ url_for('index') }}">
+                    <span class="glyphicon glyphicon-home" aria-hidden="true"></span>
+                </a>
+            </div>
+            <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
+                <ul class="nav navbar-nav navbar-right">
+                    {% if current_user.is_anonymous %}
+                    <li><a href="{{ url_for('login') }}">
+                        <button type="button" class="btn btn-default navbar-btn">Войти</button>
+                    </a></li>
+                    {% else %}
+                    <li class="dropdown">
+                        <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">Мой профиль <span class="caret"></span> </a>
+                        <ul class="dropdown-menu">
+                            <li><a href="{{ url_for('edit_favbet_data', username=current_user.username) }}">Изменить данные Favbet</a></li>
+                            <li><a href="{{ url_for('change_user_data', username=current_user.username) }}">Редактировать профиль</a></li>
+                            <li><a href="{{ url_for('change_password', username=current_user.username) }}">Изменить пароль</a></li>
+                            <li role="separator" class="divider"></li>
+                            <li><a href="{{ url_for('logout') }}">Вийти</a></li>
+                        </ul>
+                    </li>
+
+                </ul>
+                <ul class="nav navbar-nav">
+                    <li class="active"><a href="{{ url_for('bot_settings') }}">Панель управления</a></li>
+                    <li class="active"><a href="{{ url_for('once_bet_result') }}">Результаты ставок</a> </li>
+                    <li class="active"><a href="{{ url_for('game_simulation_panel') }}">Ретроперспектива и прогноз</a> </li>
+                    {% if current_user.is_admin == 1 %}
+                    <li class="dropdown">
+                        <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">Админпанель<span class="caret"></span> </a>
+                        <ul class="dropdown-menu">
+                            <li><a href="{{ url_for('admin_panels') }}">Панель администратора</a></li>
+                            <li><a href="{{ url_for('all_users_panel')}}">Управление пользователями</a></li>
+                        </ul>
+                    </li>
+                    {% endif %}
+                    {% if current_user.is_authenticated %}
+                    <p class="navbar-text" id="bot_state"></p>
+                    <script>
+                        setInterval(function(){$.ajax({
+                            url: '/update_state',
+                            type: 'POST',
+                            success: function(response) {
+                                console.log(response);
+                                $("#bot_state").html(response["value"]);
+                            },
+                            error: function(error) {
+                                console.log(error);
+                            }
+                        })}, 1000);
+                    </script>
+                    {% endif %}
+                </ul>
+                {% endif %}
+            </div>
+        </div>
+    </nav>
+{% endblock %}
+
+{% block content %}
+    <div class="container">
+        {% with messages = get_flashed_messages(category_filter=["error"]) %}
+        {% if messages %}
+            {% for message in messages %}
+            <div class="alert alert-danger" role="alert">{{ message }}</div>
+            {% endfor %}
+        {% endif %}
+        {% endwith %}
+        {% with messages = get_flashed_messages(category_filter=["success"]) %}
+        {% if messages %}
+            {% for message in messages %}
+            <div class="alert alert-success" role="alert">{{ message }}</div>
+            {% endfor %}
+        {% endif %}
+        {% endwith %}
+        {% with messages = get_flashed_messages(category_filter=["info"]) %}
+        {% if messages %}
+            {% for message in messages %}
+            <div class="alert alert-info" role="alert">{{ message }}</div>
+            {% endfor %}
+        {% endif %}
+        {% endwith %}
+        {% block app_content %}{% endblock %}
+    </div>
+{% endblock %}
+
+{% block footer %}
+<footer class="footer">
+    <div class="container">
+        <p class="text-muted">Сдесь может быть текст состояния</p>
+    </div>
+</footer>
+{% endblock %}

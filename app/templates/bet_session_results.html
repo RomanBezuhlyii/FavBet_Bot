@@ -1,0 +1,9 @@
+{% extends "base.html" %}
+
+{% block app_content %}
+    <h1>{{ info }}</h1>
+    <h2>Результаты ставок по схеме: {{ bet_scheme }}</h2>
+        {% for info in info_list %}
+            <h4>{{ info }}</h4>
+        {% endfor %}
+{% endblock %}

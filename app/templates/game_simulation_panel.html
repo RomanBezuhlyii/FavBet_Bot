@@ -1,0 +1,21 @@
+{% extends "base.html" %}
+{% import 'bootstrap/wtf.html' as wtf %}
+{% from "_render_field.html" import render_field, render_button %}
+
+{% block app_content %}
+    <div class="container">
+        <h2>Панель настройки параметров ретроперспективы</h2><hr>
+        <h4>Загрузка данных может занимать некоторое время. Дождитесь перехода на страницу результатов</h4>
+        <form action="" method="post" class="form" role="form">
+            {{ form.hidden_tag() }}
+            <fieldset>
+                {{ render_field(form.mode) }}
+                {{ render_field(form.play_schema) }}
+                {{ render_field(form.min_bet) }}
+                {{ render_field(form.game_count) }}
+                {{ render_field(form.middle0_line) }}
+                <button type="submit" class="btn btn-primary btn-lg active">Запустить</button>
+            </fieldset>
+        </form>
+    </div>
+{% endblock %}

@@ -1,0 +1,36 @@
+
+
+<div id="content"></div>
+        {% if info_state == 'one_bet' %}
+        <script>
+                setInterval(function(){$.ajax({
+                    url: '/update',
+                    type: 'POST',
+                    success: function(response) {
+                        $("div#content").append(response.data)
+                    }
+                })}, 1000);
+            </script>
+        {% endif %}
+
+<div id="content"></div>
+        <h3 id="scheme"></h3>
+        <h3 id="head"></h3>
+        <h4 id="str"></h4>
+        {% if info_state == 'one_bet' %}
+            <script>
+                setInterval(function(){$.ajax({
+                    url: '/update',
+                    type: 'POST',
+                    success: function(response) {
+                        console.log(response);
+                        $("#scheme").html(response["scheme"]);
+                        $("#head").html(response["head"]);
+                        $("#str").html(response["value"]);
+                    },
+                    error: function(error) {
+                        console.log(error);
+                    }
+                })}, 1000);
+            </script>
+        {% endif %}

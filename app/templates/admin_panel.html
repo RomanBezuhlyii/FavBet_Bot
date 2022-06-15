@@ -1,0 +1,35 @@
+{% extends "base.html" %}
+
+{% block app_content %}
+<table class="table table-striped">
+    <tr>
+        <td><h3>Код верификации новых пользователей: </h3><br></td>
+        <td><h2>{{ verification_code }}</h2></td>
+        <td></td>
+        <td></td>
+    </tr>
+</table>
+<h3 class="text-center"><strong>Пользователи онлайн</strong></h3>
+<table class="table table-bordered">
+    {% if users[0] == "Нет пользователей онлайн" %}
+    <tr>
+        <td><h3>{{ users[0] }}</h3></td>
+    </tr>
+    {% else %}
+    <tr>
+        <td><h3><strong>Имя пользователя</strong></h3></td>
+        <td><h3><strong>Статус</strong></h3></td>
+    </tr>
+        {% for user in users %}
+        <tr>
+            <td><h3>{{ user }}</h3></td>
+            <td><h3>Онлайн. Бот запущен</h3></td>
+        </tr>
+        {% endfor %}
+    {% endif %}
+
+
+
+</table>
+
+{% endblock %}
