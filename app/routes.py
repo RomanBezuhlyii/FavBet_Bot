@@ -492,6 +492,48 @@ def reset_password(token):
         return redirect(url_for('login'))
     return render_template('password_reset_password.html', form=form)
 
+'''@app.route('/update', methods = ['GET', 'POST'])
+def update():
+    global params_list, bot_list
+    if current_user.username in cnfg.user_bot_last_state:
+        # user_info = cnfg.user_bot_last_state[current_user.username]
+        params_list[current_user.username].one_bet_info = cnfg.bet_information_dict[current_user.username]
+        if len(params_list[current_user.username].one_bet_info) == 0 and params_list[current_user.username].message_count == -1:
+            params_list[current_user.username].message_count = 0
+            if params_list[current_user.username].strategy == '2 раза на цвет' or params_list[current_user.username].strategy == 'Антимартингейл-цвет':
+                return jsonify({'data': render_template('message_template.html',
+                                                        str="Бот запущен, информация отобразится после первой ставки")})
+            else:
+                return jsonify({'data': render_template('mass_message_template.html',
+                                                        elements=["Бот запущен, информация отобразится после первой ставки"])})
+        elif len(params_list[current_user.username].one_bet_info) != 0 and params_list[current_user.username].message_count != -1:
+            if params_list[current_user.username].message_count == 0:
+                params_list[current_user.username].message_count = 1
+                if params_list[current_user.username].strategy == '2 раза на цвет' or params_list[current_user.username].strategy == 'Антимартингейл-цвет':
+                    params_list[current_user.username].last_res = params_list[current_user.username].one_bet_info[-1]
+                    return jsonify({'data': render_template('message_template.html',
+                                                            str=params_list[current_user.username].one_bet_info[-1])})
+                else:
+                    params_list[current_user.username].last_res = params_list[current_user.username].one_bet_info[-1]
+                    return jsonify({'data': render_template('mass_message_template.html',
+                                                            elements=params_list[current_user.username].one_bet_info[
+                                                                -1])})
+            else:
+                if params_list[current_user.username].one_bet_info[-1] != params_list[current_user.username].last_res:
+                    if params_list[current_user.username].strategy == '2 раза на цвет' or params_list[current_user.username].strategy == 'Антимартингейл-цвет':
+                        params_list[current_user.username].last_res = params_list[current_user.username].one_bet_info[-1]
+                        return jsonify({'data': render_template('message_template.html',
+                                                                str=params_list[current_user.username].one_bet_info[-1])})
+                    else:
+                        params_list[current_user.username].last_res = params_list[current_user.username].one_bet_info[-1]
+                        return jsonify({'data': render_template('mass_message_template.html',
+                                                                elements=params_list[current_user.username].one_bet_info[-1])})
+                else:
+                    return ""
+        else:
+            return ""
+    else:
+        return ""'''
 
 @app.route('/update', methods=['POST'])
 def update():
@@ -512,11 +554,6 @@ def update():
         elif params_list[current_user.username].message_count == len(params_list[current_user.username].one_bet_info) - 1:
             params_list[current_user.username].message_count += 1
             # bet_info.append('Бот запущен, информация отобразится после первой ставки')
-            '''return jsonify({
-                'scheme': user_info[0],
-                'head': "Результат последней ставки: ",
-                'value': cnfg.bet_info_field
-                })'''
             if params_list[current_user.username].strategy == '2 раза на цвет' or params_list[current_user.username].strategy == 'Антимартингейл-цвет':
                 return jsonify({'data': render_template('message_template.html',
                                                         str=params_list[current_user.username].one_bet_info[-1])})
@@ -542,9 +579,14 @@ def update_state():
             else:
                 text = "Ошибка. Бот остановлен. Недостаточно средств для совершения ставки"
                 #flash(text, 'error')
-                if cnfg.bet_information_dict[current_user.username][-1][0] != 'Ошибка. Бот остановлен. Недостаточно средств для совершения ставки':
+                if len(cnfg.bet_information_dict[current_user.username]) == 0:
                     cnfg.bet_information_dict[current_user.username].append(['Ошибка. Бот остановлен. Недостаточно средств для совершения ставки'])
+                else:
+                    if cnfg.bet_information_dict[current_user.username][-1][0] != 'Ошибка. Бот остановлен. Недостаточно средств для совершения ставки':
+                        cnfg.bet_information_dict[current_user.username].append(['Ошибка. Бот остановлен. Недостаточно средств для совершения ставки'])
                 bot_list[current_user.username].is_last_bet_win = True
+                params_list[current_user.username].game_state = False
+                params_list[current_user.username].no_balance_bet = "Ставка"
                 stop_games(current_user.username)
                 #return render_template('no_balance.html', str = 'На балансе недостаточно средств для ставки')
                 #params_list[current_user.username].login_state = "Вход выполнен успешно!. Не хвататет средств на ставку"
@@ -574,18 +616,25 @@ def once_bet_result():
     global params_list, bot_list
     if current_user.username in cnfg.bet_information_dict:
         #params_list[current_user.username].bet_info.clear()
-        params_list[current_user.username].bet_info = cnfg.bet_information_dict[current_user.username]
-        params_list[current_user.username].bet_info.reverse()
-        return render_template('once_bet_result.html',
+        #params_list[current_user.username].bet_info = cnfg.bet_information_dict[current_user.username]
+        #params_list[current_user.username].bet_info.reverse()
+        '''return render_template('once_bet_result.html',
                                mode=params_list[current_user.username].strategy,
                                game_state=params_list[current_user.username].game_state,
                                info_state=params_list[current_user.username].info_state,
                                load_data=False,
-                               strings=params_list[current_user.username].bet_info)
+                               strings=params_list[current_user.username].bet_info)'''
     else:
-        return render_template('once_bet_result.html',
+        params_list[current_user.username].game_state = False
+        '''return render_template('once_bet_result.html',
                                game_state=False,
-                               load_data=False)
+                               load_data=False)'''
+    return render_template('once_bet_result.html',
+                           mode=params_list[current_user.username].strategy,
+                           game_state=params_list[current_user.username].game_state,
+                           info_state=params_list[current_user.username].info_state,
+                           load_data=False,
+                           strings=cnfg.bet_information_dict[current_user.username])
 
 
 @app.route('/game_simulation_panel', methods=['GET','POST'])

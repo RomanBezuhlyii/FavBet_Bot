@@ -5,6 +5,7 @@ class UserParameters:
     final_time = ''
     bet_adress = ''
     message_count = -1
+    last_res = ''
     info_state = ''
     strategy = ''
     game_active = 'active'

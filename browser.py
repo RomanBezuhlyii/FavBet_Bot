@@ -291,7 +291,7 @@ class BotClass:
                         mass.append(self.print_result_line(bal, False, "СРЕДНЯЯ ЛИНИЯ", "НИЖНЯЯ ЛИНИЯ",sum(self.lines3_middle_state), text))
                         mass.append(self.print_result_line(bal, False, "ВЕРХНЯЯ ЛИНИЯ", "НИЖНЯЯ ЛИНИЯ",sum(self.lines3_top_state), text))
                         mass.append("---")
-                        cnfg.bet_information_dict[username].append(mass)
+                        #cnfg.bet_information_dict[username].append(mass)
                         self.lines3_win_line = "НИЖНЯЯ"
                         self.lines3_up(False,True,True)
                         # status_info = status_info + ', Победа по нижней линии. Ставка: ' + str(self.line_bet['min']) + ". Баланс: " + str(self.check_balance(web)) + " грн."
@@ -306,7 +306,7 @@ class BotClass:
                         mass.append(self.print_result_line(bal, True, "СРЕДНЯЯ ЛИНИЯ", "СРЕДНЯЯ ЛИНИЯ",sum(self.lines3_middle_state), text))
                         mass.append(self.print_result_line(bal, False, "ВЕРХНЯЯ ЛИНИЯ", "СРЕДНЯЯ ЛИНИЯ",sum(self.lines3_top_state), text))
                         mass.append("---")
-                        cnfg.bet_information_dict[username].append(mass)
+                        #cnfg.bet_information_dict[username].append(mass)
                         self.lines3_win_line = "СРЕДНЯЯ"
                         self.lines3_up(True,False,True)
                 for num in cnfg.max_line:
@@ -318,7 +318,7 @@ class BotClass:
                         mass.append(self.print_result_line(bal, False, "СРЕДНЯЯ ЛИНИЯ", "ВЕРХНЯЯ ЛИНИЯ",sum(self.lines3_middle_state), text))
                         mass.append(self.print_result_line(bal, True, "ВЕРХНЯЯ ЛИНИЯ", "ВЕРХНЯЯ ЛИНИЯ",sum(self.lines3_top_state), text))
                         mass.append("---")
-                        cnfg.bet_information_dict[username].append(mass)
+                        #cnfg.bet_information_dict[username].append(mass)
                         self.lines3_win_line = "ВЕРХНЯЯ"
                         self.lines3_up(True,True,False)
                 if first_txt == '0':
@@ -328,10 +328,11 @@ class BotClass:
                     mass.append(self.print_result_line(bal, False, "СРЕДНЯЯ ЛИНИЯ", " ",sum(self.lines3_middle_state), text))
                     mass.append(self.print_result_line(bal, False, "ВЕРХНЯЯ ЛИНИЯ", " ",sum(self.lines3_top_state), text))
                     mass.append("---")
-                    cnfg.bet_information_dict[username].append(mass)
+                    #cnfg.bet_information_dict[username].append(mass)
                     self.lines3_win_line = "0"
                     self.lines3_up(True,True,True)
                 user.bet_info_field = status_info
+                cnfg.bet_information_dict[username].insert(0, mass)
                 # cnfg.bet_information_dict[username].append(status_info)
                 self.check_bet_status = 0
 
@@ -344,15 +345,15 @@ class BotClass:
 
 # Middle line 0
 
-    def bet_on_one_line(self, web, line_adr, bet_adr, bet):
-        if self.bet[str(bet)] != 0:
+    def bet_on_one_line(self, web, line_adr, bet_adr, one_bet):
+        if self.bet[str(one_bet)] != 0:
             bet_adr.click()
-            for i in range(self.bet[str(bet)]):
+            for i in range(self.bet[str(one_bet)]):
                 actions = ActionChains(web)
                 actions.move_to_element_with_offset(line_adr, 5, 5).click().perform()
 
     def bet_on_lines_middle0(self, web, line_adr):
-        self.bet_on_one_line(web,line_adr, self.bet_2000, 2000)
+        self.bet_on_one_line(web, line_adr, self.bet_2000, 2000)
         self.bet_on_one_line(web, line_adr, self.bet_500, 500)
         self.bet_on_one_line(web, line_adr, self.bet_100, 100)
         self.bet_on_one_line(web, line_adr, self.bet_20, 20)
@@ -478,8 +479,6 @@ class BotClass:
                 self.check_bet_status = 1
             elif (last_txt == 'ЗЕЛЕНОЕ' or last_txt == 'ЧЕРНОЕ' or last_txt == 'КРАСНОЕ') and self.check_bet_status == 1:
                 user.bet_info_field = ''
-                status_bet = ''
-                # status_info = str(datetime.datetime.now().strftime("%Y-%m-%d %H:%M")) + ". " + "Выпало: " + text
                 print(text)
                 down = self.middle0_lines_bet_dict[self.middle0_lines_dict['НИЖНЯЯ ЛИНИЯ']]
                 mid = self.middle0_lines_bet_dict[self.middle0_lines_dict['СРЕДНЯЯ ЛИНИЯ']]
@@ -509,7 +508,7 @@ class BotClass:
                                                            top*self.min_bet_int,
                                                            text))
                         mass.append("---")
-                        cnfg.bet_information_dict[username].append(mass)
+                        #cnfg.bet_information_dict[username].append(mass)
                         self.middle0_win_line = self.middle0_lines_dict['НИЖНЯЯ ЛИНИЯ']
                         count_wins = 1
                 for num in cnfg.middle_line:
@@ -535,7 +534,7 @@ class BotClass:
                                                            top*self.min_bet_int,
                                                            text))
                         mass.append("---")
-                        cnfg.bet_information_dict[username].append(mass)
+                        #cnfg.bet_information_dict[username].append(mass)
                         self.middle0_win_line = self.middle0_lines_dict['СРЕДНЯЯ ЛИНИЯ']
                 for num in cnfg.max_line:
                     if int(first_txt) == num:
@@ -561,7 +560,7 @@ class BotClass:
                                                            top*self.min_bet_int,
                                                            text))
                         mass.append("---")
-                        cnfg.bet_information_dict[username].append(mass)
+                        #cnfg.bet_information_dict[username].append(mass)
                         self.middle0_win_line = self.middle0_lines_dict['ВЕРХНЯЯ ЛИНИЯ']
                 if first_txt == '0':
                     mass.append("---")
@@ -584,11 +583,12 @@ class BotClass:
                                                        top*self.min_bet_int,
                                                        text))
                     mass.append("---")
-                    cnfg.bet_information_dict[username].append(mass)
+                    #cnfg.bet_information_dict[username].append(mass)
                     self.middle0_win_line = "НОЛЬ"
                 if self.middle0_win_line == 'МАКСИМУМ':
                     self.is_last_bet_win = True
                 user.bet_info_field = status_info
+                cnfg.bet_information_dict[username].insert(0, mass)
                 # cnfg.bet_information_dict[username].append(status_info)
                 self.check_bet_status = 0
 
@@ -757,7 +757,7 @@ class BotClass:
                                                            top*self.min_bet_int,
                                                            text))
                         mass.append("---")
-                        cnfg.bet_information_dict[username].append(mass)
+                        #cnfg.bet_information_dict[username].append(mass)
                         self.middle0_win_line = self.middle0_block_dict['ПЕРВЫЕ 12']
                         count_wins = 1
                 for num in cnfg.second12:
@@ -783,7 +783,7 @@ class BotClass:
                                                            top*self.min_bet_int,
                                                            text))
                         mass.append("---")
-                        cnfg.bet_information_dict[username].append(mass)
+                        #cnfg.bet_information_dict[username].append(mass)
                         self.middle0_win_line = self.middle0_block_dict['ВТОРЫЕ 12']
                 for num in cnfg.third12:
                     if int(first_txt) == num:
@@ -809,7 +809,7 @@ class BotClass:
                                                            top*self.min_bet_int,
                                                            text))
                         mass.append("---")
-                        cnfg.bet_information_dict[username].append(mass)
+                        #cnfg.bet_information_dict[username].append(mass)
                         self.middle0_win_line = self.middle0_block_dict['ТРЕТЬИ 12']
                 if first_txt == '0':
                     mass.append("---")
@@ -832,10 +832,11 @@ class BotClass:
                                                        top*self.min_bet_int,
                                                        text))
                     mass.append("---")
-                    cnfg.bet_information_dict[username].append(mass)
+                    #cnfg.bet_information_dict[username].append(mass)
                     self.middle0_win_line = "НОЛЬ"
                 if self.middle0_win_line == 'МАКСИМУМ':
                     self.is_last_bet_win = True
+                cnfg.bet_information_dict[username].insert(0, mass)
                 user.bet_info_field = status_info
                 # cnfg.bet_information_dict[username].append(status_info)
                 self.check_bet_status = 0
@@ -988,7 +989,7 @@ class BotClass:
                         mass.append(self.print_result_line(bal, False, "СРЕДНЯЯ ЛИНИЯ", "НИЖНЯЯ ЛИНИЯ", self.line_bet[self.line_names_dict['СРЕДНЯЯ']], text))
                         mass.append(self.print_result_line(bal, False, "ВЕРХНЯЯ ЛИНИЯ", "НИЖНЯЯ ЛИНИЯ", self.line_bet[self.line_names_dict['ВЕРХНЯЯ']], text))
                         mass.append("---")
-                        cnfg.bet_information_dict[username].append(mass)
+                        #cnfg.bet_information_dict[username].append(mass)
                         #status_info = status_info + ', Победа по нижней линии. Ставка: ' + str(self.line_bet['min']) + ". Баланс: " + str(self.check_balance(web)) + " грн."
                         #self.reset_lines_params()
                         if self.line_names_dict['НИЖНЯЯ'] == 'min':
@@ -1002,7 +1003,7 @@ class BotClass:
                         mass.append(self.print_result_line(bal, True, "СРЕДНЯЯ ЛИНИЯ", "СРЕДНЯЯ ЛИНИЯ", self.line_bet[self.line_names_dict['СРЕДНЯЯ']],text))
                         mass.append(self.print_result_line(bal, False, "ВЕРХНЯЯ ЛИНИЯ", "СРЕДНЯЯ ЛИНИЯ", self.line_bet[self.line_names_dict['ВЕРХНЯЯ']],text))
                         mass.append("---")
-                        cnfg.bet_information_dict[username].append(mass)
+                        #cnfg.bet_information_dict[username].append(mass)
                         if self.line_names_dict['СРЕДНЯЯ'] == 'min':
                             count_wins = 1
                 for num in cnfg.max_line:
@@ -1014,7 +1015,7 @@ class BotClass:
                         mass.append(self.print_result_line(bal, False, "СРЕДНЯЯ ЛИНИЯ", "ВЕРХНЯЯ ЛИНИЯ",self.line_bet[self.line_names_dict['СРЕДНЯЯ']], text))
                         mass.append(self.print_result_line(bal, True, "ВЕРХНЯЯ ЛИНИЯ", "ВЕРХНЯЯ ЛИНИЯ", self.line_bet[self.line_names_dict['ВЕРХНЯЯ']],text))
                         mass.append("---")
-                        cnfg.bet_information_dict[username].append(mass)
+                        #cnfg.bet_information_dict[username].append(mass)
                         if self.line_names_dict['ВЕРХНЯЯ'] == 'min':
                             count_wins = 1
                 if count_wins == 0 and first_txt != '0':
@@ -1029,7 +1030,8 @@ class BotClass:
                     mass.append(self.print_result_line(bal, False, "СРЕДНЯЯ ЛИНИЯ", " ", self.line_bet[self.line_names_dict['СРЕДНЯЯ']],text))
                     mass.append(self.print_result_line(bal, False, "ВЕРХНЯЯ ЛИНИЯ", " ", self.line_bet[self.line_names_dict['ВЕРХНЯЯ']], text))
                     mass.append("---")
-                    cnfg.bet_information_dict[username].append(mass)
+                    #cnfg.bet_information_dict[username].append(mass)
+                cnfg.bet_information_dict[username].insert(0, mass)
                 user.bet_info_field = status_info
                 #cnfg.bet_information_dict[username].append(status_info)
                 self.line_bet['min'] = 0
@@ -1187,7 +1189,7 @@ class BotClass:
                     #print(f'Вы проиграли. Сыграло {last_txt}')
                     print("--------------------------------------------------")
                 user.bet_info_field = status_info
-                cnfg.bet_information_dict[username].append(status_info)
+                cnfg.bet_information_dict[username].insert(0, status_info)
                 self.win_bet = last_txt
                 self.check_bet_status = 0
                 self.black_red_circle += 1
