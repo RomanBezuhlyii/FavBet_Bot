@@ -556,11 +556,11 @@ def update():
             # bet_info.append('Бот запущен, информация отобразится после первой ставки')
             if params_list[current_user.username].strategy == '2 раза на цвет' or params_list[current_user.username].strategy == 'Антимартингейл-цвет':
                 return jsonify({'data': render_template('message_template.html',
-                                                        str=params_list[current_user.username].one_bet_info[-1])})
+                                                        str=params_list[current_user.username].one_bet_info[0])})
             #elif params_list[current_user.username].strategy == 'Линии' or params_list[current_user.username].strategy == 'Линии3' or params_list[current_user.username].strategy == 'Линии2' or params_list[current_user.username].strategy == 'Средняя0':
             else:
                 return jsonify({'data': render_template('mass_message_template.html',
-                                                        elements = params_list[current_user.username].one_bet_info[-1])})
+                                                        elements = params_list[current_user.username].one_bet_info[0])})
         else:
             return ""
     else:
@@ -583,7 +583,7 @@ def update_state():
                     cnfg.bet_information_dict[current_user.username].append(['Ошибка. Бот остановлен. Недостаточно средств для совершения ставки'])
                 else:
                     if cnfg.bet_information_dict[current_user.username][-1][0] != 'Ошибка. Бот остановлен. Недостаточно средств для совершения ставки':
-                        cnfg.bet_information_dict[current_user.username].append(['Ошибка. Бот остановлен. Недостаточно средств для совершения ставки'])
+                        cnfg.bet_information_dict[current_user.username].insert(0, ['Ошибка. Бот остановлен. Недостаточно средств для совершения ставки'])
                 bot_list[current_user.username].is_last_bet_win = True
                 params_list[current_user.username].game_state = False
                 params_list[current_user.username].no_balance_bet = "Ставка"

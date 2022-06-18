@@ -374,29 +374,52 @@ class BotClass:
         self.middle0_lines_bet_dict['СРЕДНЕ'] = self.ssl
         self.middle0_lines_bet_dict['МАКСИМУМ'] = self.svl'''
 
+    def middle0_click_to_lines(self, web, count_snl, count_ssl, count_svl):
+        for i in range(count_snl):
+            actions = ActionChains(web)
+            actions.move_to_element_with_offset(self.middle0_bottom, 5, 5).click().perform()
+        for i in range(count_ssl):
+            actions = ActionChains(web)
+            actions.move_to_element_with_offset(self.middle0_middle, 5, 5).click().perform()
+        for i in range(count_svl):
+            actions = ActionChains(web)
+            actions.move_to_element_with_offset(self.middle0_top, 5, 5).click().perform()
+
     def middle0_bets_in_line(self, web, c_snl, c_ssl, c_svl):
         balance = self.check_balance(web)
         sum_bet = (c_snl*self.min_bet_int) + (c_ssl*self.min_bet_int) + (c_svl*self.min_bet_int)
         if sum_bet > balance:
             self.no_balance_bet = 'На балансе недостаточно средств для ставки'
             self.is_last_bet_win = True
-            return 0
-        for i in range(c_snl):
-            actions = ActionChains(web)
-            actions.move_to_element_with_offset(self.middle0_bottom, 5, 5).click().perform()
-        for i in range(c_ssl):
-            actions = ActionChains(web)
-            actions.move_to_element_with_offset(self.middle0_middle, 5, 5).click().perform()
-        for i in range(c_svl):
-            actions = ActionChains(web)
-            actions.move_to_element_with_offset(self.middle0_top, 5, 5).click().perform()
-        self.snl = c_snl
-        self.ssl = c_ssl
-        self.svl = c_svl
-        self.middle0_lines_bet_dict['МИНИМУМ'] = self.snl
-        self.middle0_lines_bet_dict['СРЕДНЕ'] = self.ssl
-        self.middle0_lines_bet_dict['МАКСИМУМ'] = self.svl
-        return 1
+        else:
+            if c_snl == 2*self.snl and c_ssl == 2*self.ssl and c_svl == 2*self.svl:
+                repeat_and_double = web.find_element(by=By.XPATH, value=cnfg.double_bt)
+                repeat_and_double.click()
+                repeat_and_double.click()
+            elif c_snl >= self.snl and c_ssl >= self.ssl and c_svl >= self.svl:
+                repeat = web.find_element(by=By.XPATH, value=cnfg.double_bt)
+                temp_snl = c_snl - self.snl
+                temp_ssl = c_ssl - self.ssl
+                temp_svl = c_svl - self.svl
+                repeat.click()
+                self.middle0_click_to_lines(web, temp_snl, temp_ssl, temp_svl)
+            else:
+                self.middle0_click_to_lines(web, c_snl, c_ssl, c_svl)
+                '''for i in range(c_snl):
+                    actions = ActionChains(web)
+                    actions.move_to_element_with_offset(self.middle0_bottom, 5, 5).click().perform()
+                for i in range(c_ssl):
+                    actions = ActionChains(web)
+                    actions.move_to_element_with_offset(self.middle0_middle, 5, 5).click().perform()
+                for i in range(c_svl):
+                    actions = ActionChains(web)
+                    actions.move_to_element_with_offset(self.middle0_top, 5, 5).click().perform()'''
+            self.snl = c_snl
+            self.ssl = c_ssl
+            self.svl = c_svl
+            self.middle0_lines_bet_dict['МИНИМУМ'] = self.snl
+            self.middle0_lines_bet_dict['СРЕДНЕ'] = self.ssl
+            self.middle0_lines_bet_dict['МАКСИМУМ'] = self.svl
 
     def middle0_logic(self,web,win_line):
         if win_line == 'МАКСИМУМ':
