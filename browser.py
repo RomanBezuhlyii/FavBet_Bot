@@ -72,6 +72,7 @@ class BotClass:
     lines3_count_min = 0
     lines3_count_middle = 0
     lines3_count_max = 0
+    lines_last_bet_state = ''
 
     def __init__(self,username, favbet_username, favbet_password):
         self.username = username
@@ -371,6 +372,10 @@ class BotClass:
         self.lines3_top_state.clear()
         self.lines3_middle_state.clear()
         self.lines_2_or_3 = 0
+        self.lines3_count_min = 0
+        self.lines3_count_middle = 0
+        self.lines3_count_max = 0
+
 
 # Middle line 0
 
@@ -954,25 +959,20 @@ class BotClass:
 
     def start_lines_bet(self,web):
         actions1 = ActionChains(web)
-        #bottom2to1.click()
         actions1.move_to_element_with_offset(self.min_line, 5, 5).click().perform()
-        self.line_bet['min'] += self.min_bet_int
         print("Min bet")
         for i in range(0, 2):
             actions = ActionChains(web)
             actions.move_to_element_with_offset(self.middle_line, 5, 5).click().perform()
-            self.line_bet['middle'] += self.min_bet_int
             print("Middle bet")
-            #middle2to1.click()
         for i in range(0, 3):
             actions = ActionChains(web)
             actions.move_to_element_with_offset(self.max_line, 5, 5).click().perform()
-            self.line_bet['max'] += self.min_bet_int
             print("Max bet")
-            #top2to1.click()
 
-    def lines_bet(self, web):
-        self.start_lines_bet(web)
+    '''def lines_bet(self, web):
+        if len(self.lines_bets_state) == 0:
+            self.start_lines_bet(web)
         self.double = web.find_element(by=By.XPATH, value=cnfg.double_bt)
         for elem in self.lines_bets_state:
             if elem == '+':
@@ -986,7 +986,31 @@ class BotClass:
                 self.line_bet['min'] *= 2
                 self.line_bet['middle'] *= 2
                 self.line_bet['max'] *= 2
-                print('x2')
+                print('x2')'''
+
+    def lines_bet(self, web):
+        self.line_bet['min'] = self.min_bet_int
+        self.line_bet['middle'] = self.min_bet_int * 2
+        self.line_bet['max'] = self.min_bet_int * 3
+        if len(self.lines_bets_state) == 0:
+            self.start_lines_bet(web)
+        else:
+            double_and_repeat = web.find_element(by=By.XPATH, value=cnfg.double_bt)
+            double_and_repeat.click()
+            if self.lines_last_bet_state == '+':
+                actions = ActionChains(web)
+                actions.move_to_element_with_offset(self.min_line, 5, 5).click().perform()
+            elif self.lines_last_bet_state == '*':
+                double_and_repeat.click()
+            for elem in self.lines_bets_state:
+                if elem == '+':
+                    self.line_bet['min'] += self.min_bet_int
+                    print('++++++')
+                if elem == 'x2':
+                    self.line_bet['min'] *= 2
+                    self.line_bet['middle'] *= 2
+                    self.line_bet['max'] *= 2
+                    print('x2')
 
     def check_bet_sum(self):
         bets = [self.min_bet_int,self.min_bet_int*2,self.min_bet_int*3]
@@ -1051,6 +1075,7 @@ class BotClass:
                         #status_info = status_info + ', Победа по нижней линии. Ставка: ' + str(self.line_bet['min']) + ". Баланс: " + str(self.check_balance(web)) + " грн."
                         #self.reset_lines_params()
                         if self.line_names_dict['НИЖНЯЯ'] == 'min':
+                            self.lines_last_bet_state = 'ВЫИГРЫШ'
                             count_wins = 1
                 for num in cnfg.middle_line:
                     if int(first_txt) == num:
@@ -1063,6 +1088,7 @@ class BotClass:
                         mass.append("---")
                         #cnfg.bet_information_dict[username].append(mass)
                         if self.line_names_dict['СРЕДНЯЯ'] == 'min':
+                            self.lines_last_bet_state = 'ВЫИГРЫШ'
                             count_wins = 1
                 for num in cnfg.max_line:
                     if int(first_txt) == num:
@@ -1075,14 +1101,17 @@ class BotClass:
                         mass.append("---")
                         #cnfg.bet_information_dict[username].append(mass)
                         if self.line_names_dict['ВЕРХНЯЯ'] == 'min':
+                            self.lines_last_bet_state = 'ВЫИГРЫШ'
                             count_wins = 1
                 if count_wins == 0 and first_txt != '0':
                     #status_info = status_info + ', Проигрыш'
                     self.lines_bets_state.append('+')
+                    self.lines_last_bet_state = '+'
                     count_wins = 0
                 if first_txt == '0' and count_wins == 0:
                     #status_info = status_info + ', Проигрыш'
                     self.lines_bets_state.append('x2')
+                    self.lines_last_bet_state = '*'
                     mass.append("---")
                     mass.append(self.print_result_line(bal, False, "НИЖНЯЯ ЛИНИЯ", " ", self.line_bet[self.line_names_dict['НИЖНЯЯ']], text))
                     mass.append(self.print_result_line(bal, False, "СРЕДНЯЯ ЛИНИЯ", " ", self.line_bet[self.line_names_dict['СРЕДНЯЯ']],text))
@@ -1103,6 +1132,7 @@ class BotClass:
         self.line_bet['middle'] = 0
         self.line_bet['max'] = 0
         self.check_bet_status = 0
+        self.lines_last_bet_state = ''
 
 #2 Colours and antimartingale
 
