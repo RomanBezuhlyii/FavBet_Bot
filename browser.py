@@ -69,6 +69,9 @@ class BotClass:
     bet_100 = ''
     bet_500 = ''
     bet_2000 = ''
+    lines3_count_min = 0
+    lines3_count_middle = 0
+    lines3_count_max = 0
 
     def __init__(self,username, favbet_username, favbet_password):
         self.username = username
@@ -233,6 +236,17 @@ class BotClass:
         else:
             list.append(self.min_bet_int)
 
+    def lines3_click_lines(self, web, count_min, count_middle, count_max):
+        for elem in range(count_min):
+            actions = ActionChains(web)
+            actions.move_to_element_with_offset(self.bottom2to1, 5, 5).click().perform()
+        for elem in range(count_middle):
+            actions = ActionChains(web)
+            actions.move_to_element_with_offset(self.middle2to1, 5, 5).click().perform()
+        for elem in range(count_max):
+            actions = ActionChains(web)
+            actions.move_to_element_with_offset(self.top2to1, 5, 5).click().perform()
+
     def lines3_bet(self, web):
         balance = self.check_balance(web)
         if self.lines3_win_line == "НИЖНЯЯ":
@@ -246,15 +260,30 @@ class BotClass:
             self.no_balance_bet = 'На балансе недостаточно средств для ставки'
             self.is_last_bet_win = True
         else:
-            for elem in self.lines3_down_state:
+            '''for elem in range(len(self.lines3_down_state)):
                 actions = ActionChains(web)
                 actions.move_to_element_with_offset(self.bottom2to1, 5, 5).click().perform()
-            for elem in self.lines3_middle_state:
+            for elem in range(len(self.lines3_middle_state)):
                 actions = ActionChains(web)
                 actions.move_to_element_with_offset(self.middle2to1, 5, 5).click().perform()
-            for elem in self.lines3_top_state:
+            for elem in range(len(self.lines3_top_state)):
                 actions = ActionChains(web)
-                actions.move_to_element_with_offset(self.top2to1, 5, 5).click().perform()
+                actions.move_to_element_with_offset(self.top2to1, 5, 5).click().perform()'''
+            count_min = len(self.lines3_down_state)
+            count_middle = len(self.lines3_middle_state)
+            count_max = len(self.lines3_top_state)
+            if count_min >= self.lines3_count_min and count_middle >= self.lines3_count_middle and count_max >= self.lines3_count_max:
+                repeat = web.find_element(by=By.XPATH, value=cnfg.double_bt)
+                temp_min = count_min - self.lines3_count_min
+                temp_middle = count_middle - self.lines3_count_middle
+                temp_max = count_max - self.lines3_count_max
+                repeat.click()
+                self.lines3_click_lines(web, temp_min, temp_middle, temp_max)
+            else:
+                self.lines3_click_lines(web, count_min, count_middle, count_max)
+            self.lines3_count_min = count_min
+            self.lines3_count_middle = count_middle
+            self.lines3_count_max = count_max
 
     def do_lines3_bet(self,web, user_bet, username,user: params.UserParameters):
         balance = self.check_balance(web)
