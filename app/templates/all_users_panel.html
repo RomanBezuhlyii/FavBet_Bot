@@ -10,12 +10,14 @@
 <table class="table table-bordered">
     <tr>
         <td><h4><strong>Имя пользователя</strong></h4></td>
+        <td><h4><strong>Почта</strong></h4></td>
         <td><h4><strong>Активация аккаунта</strong></h4></td>
         <td><h4><strong>Тип пользователя</strong></h4></td>
     </tr>
     {% for user in users %}
     <tr>
         <td><a href="{{ url_for('change_user_data_admin', username=user.username) }}"><h4>{{ user.username }}</h4></a></td>
+        <td><h4>{{ user.email }}</h4></td>
         {% if user.is_active == 0 %}
             <td>Пользователь заблокирован</td>
         {% else %}

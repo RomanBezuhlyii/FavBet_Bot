@@ -142,7 +142,7 @@ class Config(object):
     MAIL_SERVER = 'smtp.googlemail.com'
     MAIL_PORT = 587
     MAIL_USE_TLS = 1
-    MAIL_USERNAME = 'your_email'
-    MAIL_PASSWORD = 'your_email_password'
-    ADMINS = ['your_email']
+    MAIL_USERNAME = 'ruketka.master@gmail.com'
+    MAIL_PASSWORD = 'vgmfjsedblfirbps'
+    ADMINS = ['ruketka.master@gmail.com']
 

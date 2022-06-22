@@ -1013,7 +1013,10 @@ class BotClass:
                     print('x2')
 
     def check_bet_sum(self):
-        bets = [self.min_bet_int,self.min_bet_int*2,self.min_bet_int*3]
+        bets = list()
+        bets.append(self.min_bet_int)
+        bets.append(self.min_bet_int*2)
+        bets.append(self.min_bet_int*3)
         '''bets[0] = self.min_bet_int
         bets[1] = self.min_bet_int*2
         bets[2] = self.min_bet_int*3'''
