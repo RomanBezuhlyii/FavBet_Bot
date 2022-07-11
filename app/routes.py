@@ -448,7 +448,7 @@ def check_bot_state(username):
         if params_list[username].no_balance_bet == 'Ставка':
             if username in cnfg.drivers_dict:
                 #str = f"Бот запущен. Баланс: {bot_list[username].check_balance(cnfg.drivers_dict[username])} грн. Игра закроется в {params_list[username].final_time.hour}:{params_list[username].final_time.minute}"
-                str = f"Бот запущен, Игра закроется в {params_list[username].final_time.hour}:{params_list[username].final_time.minute}"
+                str = f"Бот запущен, Игра закроется в {params_list[username].final_time.strftime('%H:%M')}"
             else:
                 str = "Бот остановлен"
             return str
