@@ -13,17 +13,25 @@
                 {{ render_field(form.min_bet) }}
                 {{ render_field(form.bet_info) }}
                 {{ render_field(form.middle0_line) }}
+                {{ render_field(form.middle0_block) }}
                 {% if game_start == 'active' %}
                     <button type="submit" class="btn btn-primary btn-lg">Запустить</button>
                 {% endif %}
             </fieldset>
         </form>
 
-        <form action="/process_data/" method="POST" style="display: inline-block;">
+        <form action="/stop_game/" method="POST" style="display: inline-block;">
                 <!-- скрытый параметр -->
             <input type="hidden" name="index" value="1"><br>
             {% if game_stop == 'active' %}
                 <button class="btn btn-danger btn-lg">Остановить</button>
+            {% endif %}
+        </form>
+        <form action="/instant_stop_game/" method="POST" style="display: inline-block;">
+                <!-- скрытый параметр -->
+            <input type="hidden" name="index" value="1"><br>
+            {% if game_stop == 'active' %}
+                <button class="btn btn-danger btn-lg">Остановить мгновенно</button>
             {% endif %}
         </form>
 

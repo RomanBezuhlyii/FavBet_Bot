@@ -163,7 +163,7 @@ def change_user_data(username):
                            user=user)
 
 
-@app.route('/process_data/', methods=['POST'])
+@app.route('/stop_game/', methods=['POST'])
 @login_required
 def stop_game():
     global params_list, bot_list
@@ -214,8 +214,54 @@ def stop_game():
                                    bet_scheme=user_info[0],
                                    info_list=session_info)
 
+@app.route('/instant_stop_game/', methods=['POST'])
+@login_required
+def stop_game_instant():
+    global params_list, bot_list
+    stop = ''
+    print(bot_list[current_user.username].no_balance_bet)
+    if bot_list[current_user.username].no_balance_bet == "На балансе недостаточно средств для ставки":
+        stop = True
+        flash("Бот остановлен. Недостаточно средств для совершения ставки", 'error')
+    param = add_user_parameters(current_user.username)
+    if current_user.username in cnfg.online_users:
+        cnfg.online_users.remove(current_user.username)
+    if len(cnfg.online_users) == 0:
+        cnfg.online_users.append("Нет пользователей онлайн")
+    #index = request.form['index']
+    #if index == '1':
+    #driver = cnfg.add_webdriver(current_user.username)
+    if cnfg.scheduler.get_job(str(current_user.username) + "_stop"):
+        cnfg.scheduler.remove_job(str(current_user.username) + "_stop")
+    if cnfg.scheduler.get_job(str(current_user.username) + "_run"):
+        cnfg.scheduler.remove_job(str(current_user.username) + "_run")
+    #driver.get("https://www.favbet.com")
+    params_list[current_user.username].game_state = not params_list[current_user.username].game_state
+    params_list[current_user.username].bot_state_flag = False
+    bot_list[current_user.username].reset_all()
+    delete_user_bot(current_user.username)
+    params_list[current_user.username].reset_parameters()
+    print(cnfg.bet_information_dict[current_user.username])
+    user_info = cnfg.user_bot_last_state[current_user.username]
+    #print(user_info[1])
+    cnfg.delete_webdriver(current_user.username)
+    print('Driver close')
+    if stop == True:
+        return render_template('no_balance.html',
+                               str = "Недостаточно средств для совершения ставки")
+    else:
+        if user_info[1] == 'one_bet':
+            cnfg.bet_information_dict[current_user.username].clear()
+            return render_template('index.html',
+                                   username=current_user.username)
+        else:
+            session_info = cnfg.bet_information_dict[current_user.username].reverse()
+            cnfg.bet_information_dict[current_user.username].clear()
+            return render_template('bet_session_results.html',
+                                   bet_scheme=user_info[0],
+                                   info_list=session_info)
 
-def stop_games(username):
+def stop_game_in_code(username):
     global params_list, bot_list
     stop = ''
     print(bot_list[username].no_balance_bet)
@@ -352,7 +398,7 @@ def bot_settings():
                                                                                  minutes=forms_dict[current_user.username].bot.play_time.data.minute)
         bot_list[current_user.username].id_stop_aps = f"{current_user.username}_stop"
         #cnfg.scheduler.add_job(stop_game, 'date', run_date=params_list[current_user.username].final_time.strftime("%Y-%m-%d %H:%M:%S"), id=bot_list[current_user.username].id_stop_aps)
-        cnfg.scheduler.add_job(stop_games,
+        cnfg.scheduler.add_job(stop_game_in_code,
                                'interval',
                                hours=forms_dict[current_user.username].bot.play_time.data.hour,
                                minutes=forms_dict[current_user.username].bot.play_time.data.minute,
@@ -587,7 +633,7 @@ def update_state():
                 bot_list[current_user.username].is_last_bet_win = True
                 params_list[current_user.username].game_state = False
                 params_list[current_user.username].no_balance_bet = "Ставка"
-                stop_games(current_user.username)
+                stop_game_in_code(current_user.username)
                 #return render_template('no_balance.html', str = 'На балансе недостаточно средств для ставки')
                 #params_list[current_user.username].login_state = "Вход выполнен успешно!. Не хвататет средств на ставку"
                 #return render_template('bet_session_results.html', bet_scheme="Ошибка. Бот остановлен. Недостаточно средств для совершения ставки")

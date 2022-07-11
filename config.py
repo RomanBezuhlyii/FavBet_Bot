@@ -83,33 +83,14 @@ def delete_webdriver(username):
         drivers_dict[username].quit()
         drivers_dict.pop(username)
 
-
-def add_webdriver(username):
+#For real project
+def add_webdriver1(username):
     global drivers_dict, windows_dict
     if username in drivers_dict:
         return drivers_dict[username]
     else:
-        #windows_dict[username] = Xvfb(width=1280, height=720)
-        #addCleanup(windows_dict[username].stop)
-        #windows_dict[username].start()
-        #windows_dict[username]=Display(visible=False, size=(1280, 720))
-        #windows_dict[username].start()
         chrome_option = ChromeOptions()
         chrome_option.add_extension("proxy.zip")
-        '''options = webdriver.ChromeOptions()
-        options.add_experimental_option("detach", True)
-        options.add_argument("enable-automation")
-        options.add_argument("--disable-gpu")
-        options.add_argument("--force-device-scale-factor=1")
-        options.add_argument("--dns-prefetch-disable")
-        options.add_argument("disable-infobars")
-        options.add_argument("--disable-extensions")
-        options.add_experimental_option("excludeSwitches", ["enable-automation"])
-        options.add_experimental_option('useAutomationExtension', False)
-        options.add_argument('--disable-blink-features=AutomationControlled')
-        options.add_argument("--profile-directory=Default")
-        options.add_argument("--start-maximized")'''
-        #executable_path = "/usr/bin/chromedriver"
         capabilities = {
             "browserName": "chrome",
             "browserVersion": "80.0_VNC",
@@ -123,13 +104,23 @@ def add_webdriver(username):
             command_executor='http://selenoid:4444/wd/hub',
             options=chrome_option,
             desired_capabilities=capabilities)
-        #driver = webdriver.Chrome(chrome_options=chrome_option)
-        #driver = webdriver.Chrome()f;
         driver.maximize_window()
         drivers_dict[username] = driver
         return drivers_dict[username]
-#driver = webdriver.Chrome()
-#driver.maximize_window()
+
+#For debug
+def add_webdriver(username):
+    global drivers_dict, windows_dict
+    if username in drivers_dict:
+        return drivers_dict[username]
+    else:
+        chrome_option = ChromeOptions()
+        chrome_option.add_extension("proxy.zip")
+        executable_path = "/usr/bin/chromedriver"
+        driver = webdriver.Chrome(chrome_options=chrome_option)
+        driver.maximize_window()
+        drivers_dict[username] = driver
+        return drivers_dict[username]
 
 
 class Config(object):
