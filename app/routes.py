@@ -1,6 +1,7 @@
 # -*- coding: utf-8 -*-
 import time
 
+import pytz
 from flask import render_template, flash, redirect, url_for, request, jsonify
 from app import app, db
 from app.forms import LoginForm, BotSettingForm, ResetPasswordRequestForm, ResetPasswordForm, RegistrationForm, FavBetDataForm, UserDataForm, ImitateCasinoGame, ChangePassword, AdminPanelAllUsers
@@ -394,7 +395,7 @@ def bot_settings():
         else:
             params_list[current_user.username].strategy = 'Неопределенный вариант'
         #id = str(current_user.username) + "_stop"
-        params_list[current_user.username].final_time = datetime.now()+timedelta(hours=forms_dict[current_user.username].bot.play_time.data.hour,
+        params_list[current_user.username].final_time = datetime.now(pytz.timezone("Europe/Kiev"))+timedelta(hours=forms_dict[current_user.username].bot.play_time.data.hour,
                                                                                  minutes=forms_dict[current_user.username].bot.play_time.data.minute)
         bot_list[current_user.username].id_stop_aps = f"{current_user.username}_stop"
         #cnfg.scheduler.add_job(stop_game, 'date', run_date=params_list[current_user.username].final_time.strftime("%Y-%m-%d %H:%M:%S"), id=bot_list[current_user.username].id_stop_aps)

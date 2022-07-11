@@ -2,6 +2,7 @@ import datetime
 import random
 import time
 
+import pytz
 from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.common.by import By
 from selenium.webdriver.common.keys import Keys
@@ -1032,9 +1033,9 @@ class BotClass:
 
     def print_result_line(self, balance, state, name, win_line, sum_bet,win_number=''):
         if state == True:
-            return f'{str(datetime.datetime.now().strftime("%Y-%m-%d %H:%M"))} Выпало {win_number} {win_line}. Победа по ставке на {name}, сумма ставки: {str(sum_bet)}, текущий баланс: {balance}'
+            return f'{str(datetime.datetime.now(pytz.timezone("Europe/Kiev")).strftime("%Y-%m-%d %H:%M"))} Выпало {win_number} {win_line}. Победа по ставке на {name}, сумма ставки: {str(sum_bet)}, текущий баланс: {balance}'
         else:
-            return f'{str(datetime.datetime.now().strftime("%Y-%m-%d %H:%M"))} Выпало {win_number} {win_line}. Проигрыш по ставке на {name}, сумма ставки: {str(sum_bet)}, текущий баланс: {balance}'
+            return f'{str(datetime.datetime.now(pytz.timezone("Europe/Kiev")).strftime("%Y-%m-%d %H:%M"))} Выпало {win_number} {win_line}. Проигрыш по ставке на {name}, сумма ставки: {str(sum_bet)}, текущий баланс: {balance}'
 
 
     def lines(self, web, user_bet, username,user: params.UserParameters):
@@ -1268,7 +1269,7 @@ class BotClass:
             elif (last_txt == 'ЗЕЛЕНОЕ' or last_txt == 'ЧЕРНОЕ' or last_txt == 'КРАСНОЕ') and self.check_bet_status == 1:
                 user.bet_info_field = ''
                 status_info = ''
-                status_info = str(datetime.datetime.now().strftime("%Y-%m-%d %H:%M")) + ". " + "Выпало: " + text
+                status_info = str(datetime.datetime.now(pytz.timezone("Europe/Kiev")).strftime("%Y-%m-%d %H:%M")) + ". " + "Выпало: " + text
                 if last_txt == self.last_bet:
                     status_info = status_info + ', Победа по ' + self.last_bet + f". Ставка: {self.current_sum_bet}. Баланс: {self.check_balance(web)} грн."
                     self.is_last_bet_win = True
