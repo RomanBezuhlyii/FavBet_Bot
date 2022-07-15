@@ -15,6 +15,9 @@ git config --global user.name "DigitalOcean FavBet"
 echo -e "Pulling latest code from github.com"
 git pull origin ${GIT_BRANCH}
 
+echo -e "Stopping application"
+docker-compose down
+
 echo -e "Build latest application version"
 docker-compose build --no-cache
 
