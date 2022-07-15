@@ -16,8 +16,8 @@ services:
     ports:
       - 4444:4444
     volumes:
-      - "/C/Users/speed/Desktop/pythonProject/work/FavBet_falsk:/etc/selenoid"
-      - "/var/run/docker.sock:/var/run/docker.sock"
+      - ./selenoid:/etc/selenoid
+      - /var/run/docker.sock:/var/run/docker.sock
     networks:
         - web
     command: ["-conf", "/etc/selenoid/browsers.json", "-container-network", "web", "-limit", "8", "-timeout", "10m"]
@@ -51,9 +51,12 @@ services:
   #    - web
 
   favbet:
-    image: favbet_app:latest
+    #image: favbet_app:latest
     restart: always
     container_name: favbet_apps
+    build:
+      context: ./
+      dockerfile: Dockerfile
     volumes:
         - db:/usr/src/FavBet_flask/database/
     ports:
