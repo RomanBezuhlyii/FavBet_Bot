@@ -59,6 +59,8 @@ class RetroperspectiveClass:
     def retropersp(self, scheme, bet, count, username, fav_username, fav_password, middle_line):
         win_color = ''
         win_line = ''
+        win_line_lines = ''
+        win_line_blocks = ''
         temp_list = list()
         self.game_list.clear()
         color = colors.Colors()
@@ -136,6 +138,27 @@ class RetroperspectiveClass:
             middle0_blocks.middle0_reset()
             self.game_list.append("---")
             self.game_list.append(f'Окончательный баланс: {self.balance}')
+        elif scheme == "Средняя линия и блок":
+            middle0_lines.middle_line = middle_line
+            middle0_blocks.middle_line = middle_line
+            self.game_list.append(f'Начальный баланс: {self.balance}')
+            for i in range(int(count)):
+                self.game_list.append("---")
+                data_lines = middle0_lines.do_middle0_bet(self.balance, win_line_lines)
+                data_blocks = middle0_blocks.do_middle0_bet(self.balance, win_line_blocks)
+                sum_blocks = (data_blocks['min'] + data_blocks['middle'] + data_blocks['max']) * int(bet)
+                sum_lines = (data_lines['min'] + data_lines['middle'] + data_lines['max']) * int(bet)
+                if self.change_balance(False, sum_lines) == False:
+                    break
+                elif self.change_balance(False, sum_blocks) == False:
+                    break
+                win_line_lines = self.check_lines_win_middle0_lines_retro(data_lines, bet, temp_list[i])
+                win_line_blocks = self.check_lines_win_middle0_block_retro(data_blocks, bet, temp_list[i])
+                self.game_list.append("---")
+            middle0_lines.middle0_reset()
+            middle0_blocks.middle0_reset()
+            self.game_list.append("---")
+            self.game_list.append(f'Окончательный баланс: {self.balance}')
         elif scheme == "2 раза на цвет":
             self.game_list.append(f'Начальный баланс: {self.balance}')
             for i in range(count):
@@ -169,6 +192,8 @@ class RetroperspectiveClass:
     def forecasting(self, scheme, bet, count, middle_line = 'middle'):
         win_color = ''
         win_line = ''
+        win_line_lines = ''
+        win_line_blocks = ''
         temp_list = list()
         self.game_list.clear()
         color = colors.Colors()
@@ -238,6 +263,26 @@ class RetroperspectiveClass:
             middle0_blocks.middle0_reset()
             self.game_list.append("---")
             self.game_list.append(f'Окончательный баланс: {self.balance}')
+        elif scheme == "Средняя линия и блок":
+            middle0_lines.middle_line = middle_line
+            middle0_blocks.middle_line = middle_line
+            self.game_list.append(f'Начальный баланс: {self.balance}')
+            for i in range(int(count)):
+                self.game_list.append("---")
+                data_lines = middle0_lines.do_middle0_bet(self.balance, win_line_lines)
+                data_blocks = middle0_blocks.do_middle0_bet(self.balance, win_line_blocks)
+                sum_blocks = (data_blocks['min'] + data_blocks['middle'] + data_blocks['max']) * int(bet)
+                sum_lines = (data_lines['min'] + data_lines['middle'] + data_lines['max']) * int(bet)
+                if self.change_balance(False, sum_lines) == False:
+                    break
+                elif self.change_balance(False, sum_blocks) == False:
+                    break
+                win_line_lines = self.check_lines_win_middle0_lines(data_lines, bet)
+                win_line_blocks = self.check_lines_win_middle0_block(data_blocks, bet)
+                self.game_list.append("---")
+            middle0_lines.middle0_reset()
+            self.game_list.append("---")
+            self.game_list.append(f'Окончательный баланс: {self.balance}')
         elif scheme == "2 раза на цвет":
             self.game_list.append(f'Начальный баланс: {self.balance}')
             for i in range(count):
@@ -301,6 +346,7 @@ class RetroperspectiveClass:
         if pers > 98 and pers < 100:
             #print("Выпал 0")
             return "Выпал 0"
+
 
     def random_block(self):
         pers = random.randrange(1,100)

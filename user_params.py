@@ -17,6 +17,7 @@ class UserParameters:
     one_bet_info = list()
     mass = ["Бот запущен, информация отобразится после первой ставки"]
     middle0_line = ''
+    middle0_block = ''
 
     def __init__(self, username):
         self.username = username

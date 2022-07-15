@@ -319,6 +319,7 @@ def bot_settings():
         #forms_dict[current_user.username].bot.bet = form.min_bet.data
         params_list[current_user.username].info_state = forms_dict[current_user.username].bot.bet_info.data
         params_list[current_user.username].middle0_line = forms_dict[current_user.username].bot.middle0_line.data
+        params_list[current_user.username].middle0_block = forms_dict[current_user.username].bot.middle0_block.data
         #forms_dict[current_user.username].bot.time = forms_dict[current_user.username].bot.play_time.data
         user = add_user_bot(current_user.username, current_user.favbet_login, current_user.favbet_password)
         if forms_dict[current_user.username].bot.min_bet.data == '4':
@@ -391,7 +392,16 @@ def bot_settings():
                 params_list[current_user.username].bet_adress,
                 forms_dict[current_user.username].bot.min_bet.data,
                 current_user.username,
-                params_list[current_user.username].middle0_line)
+                params_list[current_user.username].middle0_block)
+        elif forms_dict[current_user.username].bot.play_schema.data == '8':
+            params_list[current_user.username].strategy = 'СредняяЛинияБлок'
+            params_list[current_user.username].login_state = start_game(
+                forms_dict[current_user.username].bot.play_schema.data,
+                params_list[current_user.username].bet_adress,
+                forms_dict[current_user.username].bot.min_bet.data,
+                current_user.username,
+                params_list[current_user.username].middle0_line,
+                params_list[current_user.username].middle0_block)
         else:
             params_list[current_user.username].strategy = 'Неопределенный вариант'
         #id = str(current_user.username) + "_stop"
@@ -459,7 +469,7 @@ def check_bot_state(username):
         return "Бот остановлен"
 
 
-def start_game(mode, bet_adress, user_bet, username, middle_line = 'middle'):
+def start_game(mode, bet_adress, user_bet, username, middle_line = 'middle', middle_block = 'middle'):
     global start_mode, bot_list
     if "Нет пользователей онлайн" in cnfg.online_users:
         cnfg.online_users.remove("Нет пользователей онлайн")
@@ -477,7 +487,7 @@ def start_game(mode, bet_adress, user_bet, username, middle_line = 'middle'):
                                                web_username=username,
                                                user_bet=user_bet)
     if state == True:
-        bot_list[username].set_color_adress(driver,bet_adress)
+        bot_list[username].set_start_parameters(driver, bet_adress)
             #    bet_status(driver)
         print(mode)
         print(user_bet)
@@ -486,7 +496,7 @@ def start_game(mode, bet_adress, user_bet, username, middle_line = 'middle'):
         cnfg.scheduler.add_job(call_game,
                                'interval',
                                seconds=1,
-                               args=(driver,mode,user_bet,username,params_list[username],bot_list[username],middle_line,),
+                               args=(driver,mode,user_bet,username,params_list[username],bot_list[username],middle_line,middle_block,),
                                id = bot_list[username].id_run)
         return "Вход выполнен успешно!"
     else:
@@ -494,10 +504,10 @@ def start_game(mode, bet_adress, user_bet, username, middle_line = 'middle'):
         return "Вход не выполнен"
 
 
-def call_game(web, mode, user_bet, username, param: params.UserParameters, user: favbet.BotClass, middle_line):
+def call_game(web, mode, user_bet, username, param: params.UserParameters, user: favbet.BotClass, middle_line, middle_block):
     global bot_list, params_list
     if bot_list[username].no_balance_bet == "Ставка":
-        user.check_status(web,mode, user_bet, username, param, middle_line)
+        user.check_status(web,mode, user_bet, username, param, middle_line, middle_block)
     params_list[username].no_balance_bet = bot_list[username].no_balance_bet
     '''else:
         stop_games(username)'''
@@ -714,6 +724,8 @@ def game_simulation_panel():
             cnfg.retro_dict[current_user.username].strategy = "Средняя линия почти 0"
         elif forms_dict[current_user.username].retro.play_schema.data == '7':
             cnfg.retro_dict[current_user.username].strategy = "Средний блок почти 0"
+        elif forms_dict[current_user.username].retro.play_schema.data == '8':
+            cnfg.retro_dict[current_user.username].strategy = "Средняя линия и блок"
         if forms_dict[current_user.username].retro.mode.data == 'retro':
             cnfg.retro_dict[current_user.username].result_list = cnfg.retro_dict[current_user.username].retropersp(cnfg.retro_dict[current_user.username].strategy,
                                                                                                                    int(forms_dict[current_user.username].retro.min_bet.data),

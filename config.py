@@ -115,9 +115,8 @@ def add_webdriver(username):
         return drivers_dict[username]
     else:
         chrome_option = ChromeOptions()
-        chrome_option.add_extension("proxy.zip")
         executable_path = "/usr/bin/chromedriver"
-        driver = webdriver.Chrome(chrome_options=chrome_option)
+        driver = webdriver.Chrome()
         driver.maximize_window()
         drivers_dict[username] = driver
         return drivers_dict[username]
